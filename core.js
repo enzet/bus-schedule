@@ -432,9 +432,13 @@ for (const [key, value] of Object.entries(configuration)) {
 
     var controls = document.getElementById("controls");
 
-    const text = document.createElement("span");
-    text.innerHTML = " " + key + "<br />";
+    const text = document.createElement("p");
 
+    if ("name" in configuration[key]) {
+        text.innerHTML = " " + configuration[key]["name"] + "<br />";
+    } else {
+        text.innerHTML = " " + key + "<br />";
+    }
     const element = document.createElement("input");
     element.type = "range";
     element.min = configuration[key]["min"];
@@ -452,7 +456,6 @@ for (const [key, value] of Object.entries(configuration)) {
 }
 
 function value(key) {
-    console.log(key);
     if (configuration[key]["measure"] == "integer") {
         return parseInt(configuration[key]["value"]);
     } else if (configuration[key]["measure"] == "pt") {
