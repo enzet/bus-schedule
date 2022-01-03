@@ -414,3 +414,34 @@ function processUpdate(event) {
 
     parse(event.target.value);
 }
+
+for (const [key, value] of Object.entries(configuration)) {
+
+    var controls = document.getElementById("controls");
+
+    const text = document.createElement("p");
+    text.innerHTML = key;
+    controls.appendChild(text);
+
+    const element = document.createElement("input");
+    element.type = "range";
+    element.min = configuration[key]["min"];
+    element.max = configuration[key]["max"];
+    element.value = configuration[key]["value"];
+    element.id = key;
+    controls.appendChild(element);
+
+    element.addEventListener("input", event => {
+        configuration[key]["value"] = event.target.value;
+        parse(input.value);
+    });
+}
+
+function value(key) {
+    console.log(key);
+    if (configuration[key]["measure"] == "integer") {
+        return parseInt(configuration[key]["value"]);
+    } else if (configuration[key]["measure"] == "pt") {
+        return configuration[key]["value"] + "pt";
+    }
+}
