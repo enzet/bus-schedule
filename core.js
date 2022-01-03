@@ -1,6 +1,6 @@
-const input = document.getElementById("input");
 const test = document.getElementById("test");
 
+const input = document.getElementById("input");
 input.addEventListener("input", processUpdate);
 
 elements = [];
@@ -88,11 +88,11 @@ function drawHours(line, x, y, j) {
                 "http://www.w3.org/2000/svg", "text"
             );
             hours.setAttribute("id", "hours" + j);
-            hours.style.fontSize = hourFontSize;
             hours.style.fill = primaryColor;
             elements.push(hours);
             canvas.append(hours);
         }
+        hours.style.fontSize = value("hourFontSize");
         hours.innerHTML = line[0];
         hours.setAttribute("x", x);
         hours.setAttribute("y", y);
@@ -101,8 +101,8 @@ function drawHours(line, x, y, j) {
     } else {
         w = 0;
     }
-    currentX = x + w + minuteFirstSeparator;
-    currentY = y - minuteLineHeight;
+    currentX = x + w + value("minuteFirstSeparator");
+    currentY = y - value("minuteLineHeight");
 
     for (k = 1; k < line.length; k++) {
         const minutesId = "minutes_" + j + "_" + k;
@@ -112,19 +112,19 @@ function drawHours(line, x, y, j) {
                 "http://www.w3.org/2000/svg", "text"
             );
             minutes.setAttribute("id", minutesId);
-            minutes.style.fontSize = minuteFontSize;
             minutes.style.fill = primaryColor;
             elements.push(minutes);
             canvas.append(minutes);
         }
+        minutes.style.fontSize = value("minuteFontSize");
         minutes.setAttribute("x", currentX);
         minutes.setAttribute("y", currentY);
         minutes.innerHTML = line[k];
-        currentX += minutes.getBBox().width + minuteSeparator;
+        currentX += minutes.getBBox().width + value("minuteSeparator");
 
         if (k == Math.floor(line.length / 2)) {
-            currentX = x + w + minuteFirstSeparator;
-            currentY += minuteLineHeight;
+            currentX = x + w + value("minuteFirstSeparator");
+            currentY += value("minuteLineHeight");
         }
     }
     if (line.length == 2) {
@@ -135,18 +135,18 @@ function drawHours(line, x, y, j) {
                 "http://www.w3.org/2000/svg", "text"
             );
             minutes.setAttribute("id", minutesId);
-            minutes.style.fontSize = minuteFontSize;
             minutes.style.fill = primaryColor;
             elements.push(minutes);
             canvas.append(minutes);
         }
+        minutes.style.fontSize = value("minuteFontSize");
         minutes.setAttribute("x", currentX);
         minutes.setAttribute("y", currentY);
         minutes.innerHTML = minuteText;
 
         if (k == Math.floor(line.length / 2)) {
-            current = x + w + minuteFirstSeparator;
-            currentY += minuteLineHeight;
+            current = x + w + value("minuteFirstSeparator");
+            currentY += value("minuteLineHeight");
         }
     }
 }
@@ -163,30 +163,30 @@ function drawSection(command, index, x, y) {
 
     currentX = x;
 
-    configurations = [
+    textConfigurations = [
         {
             "id": "section_" + index,
-            "size": sectionFontSize,
+            "size": value("sectionFontSize"),
             "color": primaryColor,
         },
         {
             "id": "section_translation_" + index,
-            "size": sectionTranslationFontSize,
+            "size": value("sectionTranslationFontSize"),
             "color": secondaryColor,
         },
     ]
     content = command.trim().substring(1).trim().split("/");
 
-    configurations.forEach((configuration, i) => {
-        var text = document.getElementById(configuration["id"]);
+    textConfigurations.forEach((textConfiguration, i) => {
+        var text = document.getElementById(textConfiguration["id"]);
 
         if (text == null) {
             text = document.createElementNS(
                 "http://www.w3.org/2000/svg", "text"
             );
-            text.setAttribute("id", configuration["id"]);
-            text.style.fill = configuration["color"];
-            text.style.fontSize = configuration["size"];
+            text.setAttribute("id", textConfiguration["id"]);
+            text.style.fill = textConfiguration["color"];
+            text.style.fontSize = textConfiguration["size"];
             text.style.fontWeight = "bold";
             elements.push(text);
             canvas.append(text);
@@ -197,7 +197,7 @@ function drawSection(command, index, x, y) {
         text.setAttribute("x", currentX);
         text.setAttribute("y", y);
 
-        currentX += text.getBBox().width + sectionCaptionSeparator;
+        currentX += text.getBBox().width + value("sectionCaptionSeparator");
     });
 }
 
@@ -268,9 +268,9 @@ function draw(command) {
         canvas.append(rect);
         rect.style.fill = routeColor;
     }
-    rect.setAttribute("x", leftMargin);
-    rect.setAttribute("y", topMargin);
-    rect.setAttribute("height", routeHeight);
+    rect.setAttribute("x", value("leftMargin"));
+    rect.setAttribute("y", value("topMargin"));
+    rect.setAttribute("height", value("routeHeight"));
 
     var numberElement = document.getElementById("numberText");
     if (numberElement == null) {
@@ -281,18 +281,18 @@ function draw(command) {
         elements.push(numberElement);
         canvas.append(numberElement);
         numberElement.style.fill = routeTextColor;
-        numberElement.style.fontSize = routeFontSize;
+        numberElement.style.fontSize = value("routeFontSize");
         numberElement.style.fontWeight = "bold";
     }
-    numberElement.setAttribute("x", routeX);
-    numberElement.setAttribute("y", routeY);
+    numberElement.setAttribute("x", value("routeX"));
+    numberElement.setAttribute("y", value("routeY"));
     numberElement.innerHTML = number;
     const size = numberElement.getBBox();
 
-    rect.setAttribute("width", size.width + (routeX - leftMargin) * 2);
+    rect.setAttribute("width", size.width + (value("routeX") - value("leftMargin")) * 2);
 
     var x = 
-        leftMargin + size.width + (routeX - leftMargin) * 2 + routeSeparator;
+        value("leftMargin") + size.width + (value("routeX") - value("leftMargin")) * 2 + value("routeSeparator");
     maxX = Math.max(x, maxX);
 
     var captionElement = document.getElementById("captionText");
@@ -303,12 +303,12 @@ function draw(command) {
         captionElement.setAttribute("id", "captionText");
         elements.push(captionElement);
         canvas.append(captionElement);
-        captionElement.style.fontSize = captionFontSize;
+        captionElement.style.fontSize = value("captionFontSize");
         captionElement.style.fill = primaryColor;
         captionElement.style.fontWeight = "bold";
     }
     captionElement.setAttribute("x", x);
-    captionElement.setAttribute("y", captionY);
+    captionElement.setAttribute("y", value("captionY"));
     captionElement.innerHTML = text;
 
     var captionTransliterationElement = document.getElementById(
@@ -324,11 +324,11 @@ function draw(command) {
         elements.push(captionTransliterationElement);
         canvas.append(captionTransliterationElement);
         captionTransliterationElement.style.fontSize = 
-            captionTransliterationFontSize;
+            value("captionTransliterationFontSize");
         captionTransliterationElement.style.fill = secondaryColor;
     }
     captionTransliterationElement.setAttribute("x", x);
-    captionTransliterationElement.setAttribute("y", captionTransliterationY);
+    captionTransliterationElement.setAttribute("y", value("captionTransliterationY"));
 
     if (text2 != "") {
         captionTransliterationElement.innerHTML = "from " + text2;
@@ -342,15 +342,15 @@ function draw(command) {
         captionSize.width, captionTransliterationSize.width
     );
 
-    maxX = Math.max(x + captionWidth + sectionSeparator + rightMargin, maxX);
+    maxX = Math.max(x + captionWidth + value("sectionSeparator") + value("rightMargin"), maxX);
 
-    columnX = leftMargin - sectionWidth - sectionSeparator;
-    columnY = sectionY;
+    columnX = value("leftMargin") - value("sectionWidth") - value("sectionSeparator");
+    columnY = value("sectionY");
 
     maxX = Math.max(
-        columnX + sectionWidth + sectionSeparator + rightMargin, maxX
+        columnX + value("sectionWidth") + value("sectionSeparator") + value("rightMargin"), maxX
     );
-    var maxY = sectionY;
+    var maxY = value("sectionY");
 
     y = columnY;
 
@@ -360,9 +360,9 @@ function draw(command) {
             continue;
         }
         if (lines[j].trim().charAt(0) == "#") {
-            columnX += sectionWidth + sectionSeparator;
+            columnX += value("sectionWidth") + value("sectionSeparator");
             maxX = Math.max(
-                columnX + sectionWidth + sectionSeparator + rightMargin, maxX
+                columnX + value("sectionWidth") + value("sectionSeparator") + value("rightMargin"), maxX
             );
             x = columnX;
             y = columnY;
@@ -373,7 +373,7 @@ function draw(command) {
 
         if (lines[j].charAt(0) != " ") {
             x = columnX;
-            y += rowTopMargin;
+            y += value("rowTopMargin");
             maxY = Math.max(y, maxY);
             var bar = document.getElementById("bar_" + j);
             if (bar == null) {
@@ -387,20 +387,20 @@ function draw(command) {
                 canvas.append(bar);
             }
             bar.setAttribute(
-                "d", "M " + x + "," + y + " L " + (x + sectionWidth) + "," + y
+                "d", "M " + x + "," + y + " L " + (x + value("sectionWidth")) + "," + y
             );
 
-            y += rowHeight;
+            y += value("rowHeight");
             maxY = Math.max(y, maxY);
 
             drawHours(line, x, y, j);
         } else {
-            x += columnStep;
+            x += value("columnStep");
             drawHours(line, x, y, j);
         }
 
     }
-    canvas.setAttribute("height", maxY + bottomMargin);
+    canvas.setAttribute("height", maxY + value("bottomMargin"));
     canvas.setAttribute("width", maxX);
     
 }
