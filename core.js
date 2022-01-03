@@ -186,11 +186,11 @@ function drawSection(command, index, x, y) {
             );
             text.setAttribute("id", textConfiguration["id"]);
             text.style.fill = textConfiguration["color"];
-            text.style.fontSize = textConfiguration["size"];
             text.style.fontWeight = "bold";
             elements.push(text);
             canvas.append(text);
         }
+        text.style.fontSize = textConfiguration["size"];
         if (content[i] != null) {
             text.innerHTML = content[i];
         }
@@ -349,15 +349,21 @@ function draw(command) {
         captionSize.width, captionTransliterationSize.width
     );
 
+    y = value("topMargin") + height + value("routeHPadding") * 2
+        + value("sectionTopPadding") + Math.max(
+            parseInt(configuration["sectionFontSize"]["value"]),
+            parseInt(configuration["sectionTranslationFontSize"]["value"])
+        );
+
     maxX = Math.max(x + captionWidth + value("sectionSeparator") + value("rightMargin"), maxX);
 
     columnX = value("leftMargin") - value("sectionWidth") - value("sectionSeparator");
-    columnY = value("sectionY");
+    columnY = y;
 
     maxX = Math.max(
         columnX + value("sectionWidth") + value("sectionSeparator") + value("rightMargin"), maxX
     );
-    var maxY = value("sectionY");
+    var maxY = y;
 
     y = columnY;
 
