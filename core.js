@@ -287,14 +287,14 @@ function draw(command) {
         numberElement.style.fontSize = value("routeFontSize");
         numberElement.style.fontWeight = "bold";
     }
-    numberElement.setAttribute("x", value("routeX"));
+    numberElement.setAttribute("x", x + value("routeWPadding"));
     numberElement.setAttribute("y", value("routeY"));
     numberElement.innerHTML = number;
     const size = numberElement.getBBox();
 
-    rect.setAttribute("width", size.width + (value("routeX") - value("leftMargin")) * 2);
+    rect.setAttribute("width", size.width + value("routeWPadding") * 2);
 
-    x = value("leftMargin") + size.width + (value("routeX") - value("leftMargin")) * 2 + value("routeSeparator");
+    x = value("leftMargin") + size.width + value("routeWPadding") * 2 + value("routeSeparator");
     maxX = Math.max(x, maxX);
 
     var captionElement = document.getElementById("captionText");
