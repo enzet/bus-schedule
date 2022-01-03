@@ -273,7 +273,6 @@ function draw(command) {
     }
     rect.setAttribute("x", x);
     rect.setAttribute("y", y);
-    rect.setAttribute("height", value("routeHeight"));
 
     var numberElement = document.getElementById("numberText");
     if (numberElement == null) {
@@ -284,14 +283,18 @@ function draw(command) {
         elements.push(numberElement);
         canvas.append(numberElement);
         numberElement.style.fill = routeTextColor;
-        numberElement.style.fontSize = value("routeFontSize");
         numberElement.style.fontWeight = "bold";
     }
-    numberElement.setAttribute("x", x + value("routeWPadding"));
-    numberElement.setAttribute("y", value("routeY"));
+    numberElement.style.fontSize = value("routeFontSize");
     numberElement.innerHTML = number;
     const size = numberElement.getBBox();
 
+    height = parseInt(configuration["routeFontSize"]["value"])
+
+    numberElement.setAttribute("x", x + value("routeWPadding"));
+    numberElement.setAttribute("y", y + value("routeHPadding") + height);
+
+    rect.setAttribute("height", height + value("routeHPadding") * 2);
     rect.setAttribute("width", size.width + value("routeWPadding") * 2);
 
     x = value("leftMargin") + size.width + value("routeWPadding") * 2 + value("routeSeparator");
