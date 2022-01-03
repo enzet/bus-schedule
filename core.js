@@ -260,6 +260,9 @@ function draw(command) {
         }
     }
 
+    var x = value("leftMargin");
+    var y = value("topMargin");
+
     var rect = document.getElementById("numberRectangle");
     if (rect == null) {
         rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");  
@@ -268,8 +271,8 @@ function draw(command) {
         canvas.append(rect);
         rect.style.fill = routeColor;
     }
-    rect.setAttribute("x", value("leftMargin"));
-    rect.setAttribute("y", value("topMargin"));
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
     rect.setAttribute("height", value("routeHeight"));
 
     var numberElement = document.getElementById("numberText");
@@ -291,8 +294,7 @@ function draw(command) {
 
     rect.setAttribute("width", size.width + (value("routeX") - value("leftMargin")) * 2);
 
-    var x = 
-        value("leftMargin") + size.width + (value("routeX") - value("leftMargin")) * 2 + value("routeSeparator");
+    x = value("leftMargin") + size.width + (value("routeX") - value("leftMargin")) * 2 + value("routeSeparator");
     maxX = Math.max(x, maxX);
 
     var captionElement = document.getElementById("captionText");
@@ -303,12 +305,12 @@ function draw(command) {
         captionElement.setAttribute("id", "captionText");
         elements.push(captionElement);
         canvas.append(captionElement);
-        captionElement.style.fontSize = value("captionFontSize");
         captionElement.style.fill = primaryColor;
         captionElement.style.fontWeight = "bold";
     }
+    captionElement.style.fontSize = value("captionFontSize");
     captionElement.setAttribute("x", x);
-    captionElement.setAttribute("y", value("captionY"));
+    captionElement.setAttribute("y", y + value("captionY"));
     captionElement.innerHTML = text;
 
     var captionTransliterationElement = document.getElementById(
@@ -323,12 +325,14 @@ function draw(command) {
         );
         elements.push(captionTransliterationElement);
         canvas.append(captionTransliterationElement);
-        captionTransliterationElement.style.fontSize = 
-            value("captionTransliterationFontSize");
         captionTransliterationElement.style.fill = secondaryColor;
     }
+    captionTransliterationElement.style.fontSize =
+        value("captionTransliterationFontSize");
     captionTransliterationElement.setAttribute("x", x);
-    captionTransliterationElement.setAttribute("y", value("captionTransliterationY"));
+    captionTransliterationElement.setAttribute(
+        "y", y + value("captionY") + value("captionStep")
+    );
 
     if (text2 != "") {
         captionTransliterationElement.innerHTML = "from " + text2;
@@ -419,9 +423,8 @@ for (const [key, value] of Object.entries(configuration)) {
 
     var controls = document.getElementById("controls");
 
-    const text = document.createElement("p");
-    text.innerHTML = key;
-    controls.appendChild(text);
+    const text = document.createElement("span");
+    text.innerHTML = " " + key + "<br />";
 
     const element = document.createElement("input");
     element.type = "range";
@@ -429,7 +432,9 @@ for (const [key, value] of Object.entries(configuration)) {
     element.max = configuration[key]["max"];
     element.value = configuration[key]["value"];
     element.id = key;
+
     controls.appendChild(element);
+    controls.appendChild(text);
 
     element.addEventListener("input", event => {
         configuration[key]["value"] = event.target.value;
