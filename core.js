@@ -21,8 +21,7 @@ parse(input.textContent);
 
 /**
  * Get lexemes for header configuration.
- *
- * @param text input header configuration
+ * @param {String} text Input header configuration.
  */
 function lexer(text) {
 
@@ -77,9 +76,8 @@ function lexer(text) {
 
 /**
  * Draw hours and minutes.
- *
- * @param x left point of hour text element
- * @param y bottom point of hour text element
+ * @param {Number} x Left point of hour text element.
+ * @param {Number} y Bottom point of hour text element.
  */
 function drawHours(line, x, y, j) {
 
@@ -155,12 +153,11 @@ function drawHours(line, x, y, j) {
 
 /**
  * Draw column section.
- *
- * @param command text configuration: starts with "#" and uses "/" to separate
- *     Russian text from its translation
- * @param index unique section index
- * @param x left point of section text element
- * @param y bottom point of section text element
+ * @param {String} command Text configuration: starts with "#" and uses "/" to
+ *     separate Russian text from its translation.
+ * @param {Number} index Unique section index.
+ * @param {Number} x Left point of section text element.
+ * @param {Number} y Bottom point of section text element.
  */
 function drawSection(command, index, x, y) {
 
@@ -206,8 +203,7 @@ function drawSection(command, index, x, y) {
 
 /**
  * Draw the whole image.
- *
- * @param command schedule configuration command
+ * @param {String} command Schedule configuration command.
  */
 function draw(command) {
 
