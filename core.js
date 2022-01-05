@@ -82,6 +82,8 @@ function lexer(text) {
  */
 function drawHours(line, x, y, j) {
 
+    y += value("rowTopPadding") + fontValue("hourFontSize");
+
     if (line[0] != "-") {
         var hours = document.getElementById("hours" + j);
         if (hours == null) {
@@ -103,8 +105,7 @@ function drawHours(line, x, y, j) {
         w = 0;
     }
     var currentX = x + w + value("minuteFirstSeparator");
-    var currentY = y - parseInt(configuration["hourFontSize"]["value"])
-        + parseInt(configuration["minuteFontSize"]["value"]);
+    var currentY = y - fontValue("hourFontSize") + fontValue("minuteFontSize");
 
     for (k = 1; k < line.length; k++) {
         const minutesId = "minutes_" + j + "_" + k;
@@ -291,7 +292,7 @@ function draw(command) {
     numberElement.innerHTML = number;
     const size = numberElement.getBBox();
 
-    height = parseInt(configuration["routeFontSize"]["value"])
+    height = fontValue("routeFontSize")
 
     numberElement.setAttribute("x", x + value("routeWPadding"));
     numberElement.setAttribute("y", y + value("routeHPadding") + height);
@@ -353,8 +354,8 @@ function draw(command) {
 
     y = value("topMargin") + height + value("routeHPadding") * 2
         + value("sectionTopPadding") + Math.max(
-            parseInt(configuration["sectionFontSize"]["value"]),
-            parseInt(configuration["sectionTranslationFontSize"]["value"])
+            fontValue("sectionFontSize"),
+            fontValue("sectionTranslationFontSize"),
         );
 
     maxX = Math.max(x + captionWidth + value("sectionSeparator") + value("rightMargin"), maxX);
@@ -368,6 +369,7 @@ function draw(command) {
     var maxY = y;
 
     y = columnY;
+    rowIndex = 0;
 
     for (var j = 1; j < lines.length; j++) {
 
@@ -382,14 +384,27 @@ function draw(command) {
             x = columnX;
             y = columnY;
             drawSection(lines[j], j, x, y);
+            y += value("sectionBottomPadding")
+            rowIndex = 0;
             continue;
         }
         line = lines[j].trim().split(" ");
 
         if (lines[j].charAt(0) != " ") {
             x = columnX;
-            y += value("rowTopMargin");
-            maxY = Math.max(y, maxY);
+
+            if (rowIndex > 0) {
+                y += value("rowTopPadding") + fontValue("hourFontSize")
+                    + value("rowBottomPadding");
+
+                maxY = Math.max(
+                    y + value("rowTopPadding") + fontValue("hourFontSize")
+                        + value("bottomMargin"),
+                    maxY
+                );
+            }
+            rowIndex += 1;
+
             var bar = document.getElementById("bar_" + j);
             if (bar == null) {
                 bar = document.createElementNS(
@@ -406,19 +421,14 @@ function draw(command) {
                 "M " + x + "," + y + " L " + (x + value("sectionWidth")) + "," + y
             );
 
-            y += value("rowHeight");
-            maxY = Math.max(y, maxY);
-
             drawHours(line, x, y, j);
         } else {
             x += value("columnStep");
             drawHours(line, x, y, j);
         }
-
     }
-    canvas.setAttribute("height", maxY + value("bottomMargin"));
+    canvas.setAttribute("height", maxY);
     canvas.setAttribute("width", maxX);
-    
 }
 
 function parse(command) {
@@ -470,7 +480,6 @@ for (const [key, value] of Object.entries(configuration)) {
 
 /**
  * Get configuration value.
- * @param {String} key
  */
 function value(key) {
     if (configuration[key]["measure"] == "integer") {
@@ -478,4 +487,11 @@ function value(key) {
     } else if (configuration[key]["measure"] == "pt") {
         return configuration[key]["value"] + "pt";
     }
+}
+
+/**
+ * Get font size value as a number.
+ */
+function fontValue(key) {
+    return parseInt(configuration[key]["value"]);
 }
