@@ -3,8 +3,9 @@ const test = document.getElementById("test");
 const input = document.getElementById("input");
 input.addEventListener("input", processUpdate);
 
-elements = [];
-pathElements = [];
+// All created SVG elements.
+const elements = [];
+const pathElements = [];
 
 const transliteration = {
     "а": "a", "б": "b", "в": "v", "г": "g",
@@ -101,8 +102,9 @@ function drawHours(line, x, y, j) {
     } else {
         w = 0;
     }
-    currentX = x + w + value("minuteFirstSeparator");
-    currentY = y - value("minuteLineHeight");
+    var currentX = x + w + value("minuteFirstSeparator");
+    var currentY = y - parseInt(configuration["hourFontSize"]["value"])
+        + parseInt(configuration["minuteFontSize"]["value"]);
 
     for (k = 1; k < line.length; k++) {
         const minutesId = "minutes_" + j + "_" + k;
@@ -124,7 +126,7 @@ function drawHours(line, x, y, j) {
 
         if (k == Math.floor(line.length / 2)) {
             currentX = x + w + value("minuteFirstSeparator");
-            currentY += value("minuteLineHeight");
+            currentY = y;
         }
     }
     if (line.length == 2) {
@@ -146,7 +148,7 @@ function drawHours(line, x, y, j) {
 
         if (k == Math.floor(line.length / 2)) {
             current = x + w + value("minuteFirstSeparator");
-            currentY += value("minuteLineHeight");
+            currentY = y;
         }
     }
 }
@@ -207,6 +209,8 @@ function drawSection(command, index, x, y) {
  */
 function draw(command) {
 
+    // Move all created elements out of sight.
+
     elements.forEach(element => {
         element.setAttribute("x", -9999);
     });
@@ -222,8 +226,6 @@ function draw(command) {
     var text = "";
     var text2 = "";
     var maxX = 0;
-
-    var insideNumber = false;
 
     for (var i = 0; i < lexemes.length; i++) {
 
@@ -400,7 +402,8 @@ function draw(command) {
                 canvas.append(bar);
             }
             bar.setAttribute(
-                "d", "M " + x + "," + y + " L " + (x + value("sectionWidth")) + "," + y
+                "d",
+                "M " + x + "," + y + " L " + (x + value("sectionWidth")) + "," + y
             );
 
             y += value("rowHeight");
@@ -430,24 +433,34 @@ function processUpdate(event) {
 
 for (const [key, value] of Object.entries(configuration)) {
 
-    var controls = document.getElementById("controls");
-
+    const controls = document.getElementById("controls");
     const text = document.createElement("p");
+    const div = document.createElement("div");
+
+    div.classList.add("control");
 
     if ("name" in configuration[key]) {
-        text.innerHTML = " " + configuration[key]["name"] + "<br />";
+        text.innerHTML = configuration[key]["name"];
     } else {
-        text.innerHTML = " " + key + "<br />";
+        text.innerHTML = key;
     }
+
     const element = document.createElement("input");
-    element.type = "range";
-    element.min = configuration[key]["min"];
-    element.max = configuration[key]["max"];
+    element.type = "number";
+
+    if ("min" in configuration[key]) {
+        element.min = configuration[key]["min"];
+    }
+    if ("max" in configuration[key]) {
+        element.max = configuration[key]["max"];
+    }
     element.value = configuration[key]["value"];
     element.id = key;
 
-    controls.appendChild(element);
-    controls.appendChild(text);
+    div.appendChild(text);
+    div.appendChild(element);
+
+    controls.appendChild(div);
 
     element.addEventListener("input", event => {
         configuration[key]["value"] = event.target.value;
@@ -455,6 +468,10 @@ for (const [key, value] of Object.entries(configuration)) {
     });
 }
 
+/**
+ * Get configuration value.
+ * @param {String} key
+ */
 function value(key) {
     if (configuration[key]["measure"] == "integer") {
         return parseInt(configuration[key]["value"]);
